@@ -21,6 +21,7 @@ Controller::Controller(ros::NodeHandle nh):m_nh(nh){
     //pub = nh.advertise<sensor_msgs::PointCloud>("PUBLISH_TOPIC", 1);
     pub1 = nh.advertise<sensor_msgs::PointCloud2> ("Non_plane", 1);
     pub2 = nh.advertise<sensor_msgs::PointCloud2> ("Plane_surface", 1);
+    cluster_publisher = nh.advertise<sensor_msgs::PointCloud2>("cluster" , 1);
     get_normals_srv_ = nh.advertiseService("get_normals", &Controller::getNormalsReq, this);
     markers_pub_ = nh.advertise<visualization_msgs::MarkerArray>( "visualization_marker", 0 );
 }
@@ -55,10 +56,11 @@ void Controller::callback(const sensor_msgs::PointCloud2ConstPtr& cloud_msg){
         
 
         // Step 3. Find bounding boxes for the clusters
+        auto cloud3 = pointProcessorI->conversion(cluster);
         Box box = pointProcessorI->BoundingBox(cluster);
         
         imagecontrol::BoundingBox3d bb_box; 
-
+        cluster_publisher.publish(cloud3);
         bb_box.xmin = box.x_min;
         bb_box.xmax = box.x_max;
         bb_box.ymin = box.y_min;

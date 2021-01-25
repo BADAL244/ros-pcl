@@ -43,7 +43,7 @@ class Controller
         ros::Publisher m_state;
         ros::Publisher pub1;
         ros::Publisher pub2;
-        ros::Publisher pubXZ;
+        ros::Publisher cluster_publisher;
         ros::Subscriber m_prev_state;
         ros::Publisher markers_pub_;
         int a , b ;

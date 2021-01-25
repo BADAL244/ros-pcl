@@ -17,7 +17,7 @@ from imagecontrol.msg import DetectedObject
 from imagecontrol.pcl_helper import *
 
 def get_normals(cloud):
-    get_normals_prox = rospy.ServiceProxy('/feature_extractor/get_normals',
+    get_normals_prox = rospy.ServiceProxy('get_normals',
                                           GetNormals)
     return get_normals_prox(cloud).cluster
 
