@@ -64,6 +64,8 @@ add_message_files(
    FILES
     BoundingBox3d.msg
     BoundingBoxes3d.msg
+    DetectedObject.msg
+    DetectedObjectsArray.msg
 )
 
 
