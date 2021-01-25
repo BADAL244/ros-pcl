@@ -54,8 +54,8 @@ class Controller
         Eigen::Vector4f maxPoint = Eigen::Vector4f(2, .4 , 1 ,  1);
         int maxIter = 500;
         float clusterTolerance = 1;
-        int minClusterSize = 300;
-        int maxClusterSize = 1000;
+        int minClusterSize = 50;
+        int maxClusterSize = 200;
         ros::ServiceServer get_normals_srv_;
         
 

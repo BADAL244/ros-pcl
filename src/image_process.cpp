@@ -41,6 +41,7 @@ void Controller::callback(const sensor_msgs::PointCloud2ConstPtr& cloud_msg){
     //std::pair<pcl::PointCloud<pcl::PointXYZRGB>::Ptr, pcl::PointCloud<pcl::PointXYZRGB>::Ptr> segmentCloud2 = pointProcessor->RansacPlaneSegment(filtercloud, 100, 0.1);
     auto cloud1 = pointProcessorI->conversion(segmentCloud2.first);
     auto cloud2 = pointProcessorI->conversion(segmentCloud2.second);
+    pointProcessorI->numPoints(segmentCloud2.second);
     int clusterId = 0;
     std::vector<pcl::PointCloud<pcl::PointXYZRGB>::Ptr> cloudClusters = pointProcessorI->Clustering(segmentCloud2.second, clusterTolerance, minClusterSize, maxClusterSize);
     

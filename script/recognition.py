@@ -27,20 +27,17 @@ def pcl_callback(pcl_msg):
     # Convert ROS msg to PCL data (XYZRGB)
     ros_cloud = ros_to_pcl(pcl_msg)
 
-   
+    print(ros_cloud)
         
-    # Store the detected objects and labels in these lists
-    detected_objects_labels = []
-    detected_objects = []
-    color_cluster_point_list = []
+ 
 
 
     # Extract histogram features (similar to capture_features.py)
     histogram_bins = 64
-    chists = compute_color_histograms(ros_cloud,
+    chists = compute_color_histograms(pcl_msg,
                                         nbins=histogram_bins,
                                         using_hsv=True)
-    normals = get_normals(ros_cloud)
+    normals = get_normals(pcl_msg)
     nhists = compute_normal_histograms(normals,
                                         nbins=histogram_bins)
     feature = np.concatenate((chists, nhists))
@@ -49,35 +46,11 @@ def pcl_callback(pcl_msg):
     #   to detected_objects_labels list
     prediction = clf.predict(scaler.transform(feature.reshape(1, -1)))
     label = encoder.inverse_transform(prediction)[0]
-    detected_objects_labels.append(label)
+    print(label)
+   
 
     # Publish a label into RViz
-    label_pos = list(ros_cloud[pts_list[0]])
-    label_pos[2] += .4
-    object_markers_pub.publish(make_label(label, label_pos, index))
-
-    # Add the detected object to the list of detected objects.
-    do = DetectedObject()
-    do.label = label
-    do.cloud = ros_cloud
-    detected_objects.append(do)
-
-    rospy.loginfo('Detected {} objects: {}'.format(len(detected_objects_labels), detected_objects_labels))
     
-    # Create new cloud containing all clusters, each with a unique color
-    cluster_cloud = pcl.PointCloud_PointXYZRGB()
-    cluster_cloud.from_list(color_cluster_point_list)
-
-    # Convert PCL data to ROS messages
-    ros_cloud_object_cluster = pcl_to_ros(cluster_cloud)
-    ros_cloud_objects = pcl_to_ros(cloud_objects)
-    ros_cloud_table = pcl_to_ros(cloud_table)
-
-    # Publish ROS messages of the point clouds and detected objects
-    pcl_objects_cloud_pub.publish(ros_cloud_object_cluster) # solid color objects
-    pcl_objects_pub.publish(ros_cloud_objects)      # original color objects
-    pcl_table_pub.publish(ros_cloud_table)          # table cloud
-    detected_objects_pub.publish(detected_objects)  # detected object labels
 
 if __name__ == '__main__':
 
@@ -86,7 +59,7 @@ if __name__ == '__main__':
 
     # Create Subscriber to receive the published data coming from the
     #   pcl_callback() function that will be processing the point clouds
-    pcl_sub = rospy.Subscriber('/sensor_stick/point_cloud', pc2.PointCloud2,
+    pcl_sub = rospy.Subscriber('/cluster', pc2.PointCloud2,
                                pcl_callback, queue_size=1)
 
     # Create Publishers
